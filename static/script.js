@@ -12,50 +12,6 @@ function printOutput(message) {
   }
 }
 
-// Registrera ny användare
-async function registerUser() {
-  const username = document.getElementById("reg-username").value;
-  const password = document.getElementById("reg-password").value;
-
-  const res = await fetch("/register", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ username, password })
-  });
-
-  const data = await res.json();
-  if (res.ok) {
-    printOutput("Registrering: " + data.message);
-  } else {
-    printOutput("Registrering misslyckades: " + data.detail);
-  }
-}
-
-// Logga in användare
-async function loginUser() {
-  const username = document.getElementById("login-username").value;
-  const password = document.getElementById("login-password").value;
-
-  const res = await fetch("/token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    },
-    body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
-  });
-
-  const data = await res.json();
-  if (res.ok) {
-    accessToken = data.access_token;
-    loggedInUsername = username;
-    printOutput(`Inloggning lyckades!\nInloggad som: ${loggedInUsername}`);
-  } else {
-    printOutput("Inloggning misslyckades: " + (data.detail || JSON.stringify(data)));
-  }
-}
-
 // Gå med i match
 async function joinMatch() {
   const betInput = document.getElementById("bet-amount");

@@ -20,8 +20,17 @@ class ResultReport(BaseModel):
 import secrets
 from fastapi.responses import HTMLResponse
 import httpx
-
+from fastapi import FastAPI, Request
+from fastapi.responses import RedirectResponse
 app = FastAPI()
+@app.middleware("http")
+async def redirect_www(request: Request, call_next):
+    host = request.headers.get("host", "")
+    if host.startswith("www."):
+        url = str(request.url).replace("://www.", "://")
+        return RedirectResponse(url)
+    response = await call_next(request)
+    return response
 FACEIT_API_KEY = "815abf69-12b1-4874-b457-75c1c797b037"
 
 @app.get("/faceit-user/{nickname}")
@@ -286,5 +295,40 @@ def login():
     return RedirectResponse(url)
 
 @app.get("/callback")
-def callback(code: str, state: str):
-    return {"message": "Inloggning lyckades!", "code": code, "state": state}
+async def callback(code: str, state: str):
+    token_url = "https://api.faceit.com/auth/v1/oauth/token"
+    headers = {"Content-Type": "application/json"}
+    data = {
+        "grant_type": "authorization_code",
+        "code": code,
+        "redirect_uri": REDIRECT_URI,
+        "client_id": CLIENT_ID,
+        "client_secret": CLIENT_SECRET
+    }
+
+    async with httpx.AsyncClient() as client:
+        token_response = await client.post(token_url, json=data, headers=headers)
+
+    if token_response.status_code != 200:
+        raise HTTPException(status_code=500, detail="Kunde inte hämta access token")
+
+    token_data = token_response.json()
+    access_token = token_data.get("access_token")
+
+    profile_url = "https://open.faceit.com/data/v4/players"
+    profile_headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+
+    async with httpx.AsyncClient() as client:
+        profile_response = await client.get(profile_url, headers=profile_headers)
+
+    if profile_response.status_code != 200:
+        raise HTTPException(status_code=500, detail="Kunde inte hämta spelarprofil")
+
+    profile = profile_response.json()
+    return {
+        "nickname": profile.get("nickname"),
+        "faceit_id": profile.get("player_id"),
+        "games": profile.get("games", {})
+    }
