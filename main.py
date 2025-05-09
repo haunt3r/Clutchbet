@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 import os
 from fastapi.responses import RedirectResponse
 import urllib.parse
-load_dotenv()
+load_dotenv("4bfe051f-ff08-48f2-9edb-67a7724c2629")
 
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")

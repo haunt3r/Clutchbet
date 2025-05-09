@@ -142,7 +142,6 @@ function printOutput(text) {
 }
 // Koppla funktionerna till fönstret
 window.onload = () => {
-  window.loginUser = loginUser;
   window.joinMatch = joinMatch;
   window.submitResult = submitResult;
   window.reportWin = reportWin;
