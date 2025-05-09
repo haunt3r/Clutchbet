@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <title>Clutchbet</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Välkommen till Clutchbet</h1>
+    <div>
+        <h3>Sök FACEIT-spelare</h3>
+        <input type="text" id="faceit-nickname" placeholder="Ange nickname">
+        <button onclick="fetchFaceitInfo()">Sök</button>
+<a id="faceit-profile-link" href="#" target="_blank" style="display:none;">
+  <button type="button">Profil</button>
+</a>
+        <pre id="faceit-result"></pre>
+      </div>
+
+    <section class="section">
+        <h2>Registrera</h2>
+        <input id="reg-username" placeholder="Användarnamn">
+        <input id="reg-password" type="password" placeholder="Lösenord">
+        <button onclick="registerUser()">Registrera</button>
+    </section>
+
+    <a href="/login">
+        <button type="button">Logga in med FACEIT</button>
+      </a>
+
+    <section class="section">
+        <h2>Spela</h2>
+        <input id="bet-amount" placeholder="Insats (kr)">
+        <select id="game-mode">
+            <option value="1v1">1v1</option>
+            <option value="5v5">5v5</option>
+          </select>
+          <select id="team-select">
+            <option value="">--Välj lag--</option>
+            <option value="A">Lag A</option>
+            <option value="B">Lag B</option>
+          </select>
+        <button onclick="joinMatch()">Gå med i match</button>
+        <button onclick="showHistory()">Visa matchhistorik</button>
+        <a href="/docs" target="_blank"><button>Starta API-dokumentation (Swagger)</button></a>
+    </section>
+    <button onclick="reportWin()">Rapportera Vinst</button>
+<button onclick="reportLoss()">Rapportera Förlust</button>
+
+    <div id="output" style="white-space: pre-wrap; margin-top: 1em; color: #00ffcc;"></div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
