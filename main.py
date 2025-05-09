@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 import os
 from fastapi.responses import RedirectResponse
 import urllib.parse
-load_dotenv("4bfe051f-ff08-48f2-9edb-67a7724c2629")
+load_dotenv()
 
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
@@ -31,7 +31,7 @@ async def redirect_www(request: Request, call_next):
         return RedirectResponse(url)
     response = await call_next(request)
     return response
-FACEIT_API_KEY = "4bfe051f-ff08-48f2-9edb-67a7724c2629"
+FACEIT_API_KEY = "FACEIT_API_KEY"
 
 @app.get("/faceit-user/{nickname}")
 async def get_faceit_user_info(nickname: str):
