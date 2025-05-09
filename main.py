@@ -332,3 +332,12 @@ async def callback(code: str, state: str):
         "faceit_id": profile.get("player_id"),
         "games": profile.get("games", {})
     }
+@app.get("/terms", response_class=HTMLResponse)
+def show_terms():
+    with open("static/terms.html", "r", encoding="utf-8") as f:
+        return f.read()
+
+@app.get("/privacy", response_class=HTMLResponse)
+def show_privacy():
+    with open("static/privacy.html", "r", encoding="utf-8") as f:
+        return f.read()
