@@ -31,7 +31,7 @@ async def redirect_www(request: Request, call_next):
         return RedirectResponse(url)
     response = await call_next(request)
     return response
-FACEIT_API_KEY = "FACEIT_API_KEY"
+FACEIT_API_KEY = os.getenv("FACEIT_API_KEY")
 
 @app.get("/faceit-user/{nickname}")
 async def get_faceit_user_info(nickname: str):
