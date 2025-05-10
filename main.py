@@ -40,8 +40,9 @@ print("API-KEY ÄR:", FACEIT_API_KEY)
 async def get_faceit_user_info(nickname: str):
     url = f"https://open.faceit.com/data/v4/players?nickname={nickname}"
     headers = {
-        "Authorization": f"Bearer {FACEIT_API_KEY}"
-    }
+    "accept": "application/json",
+    "Authorization": f"Bearer {FACEIT_API_KEY}"
+}
 
     async with httpx.AsyncClient() as client:
         response = await client.get(url, headers=headers)
@@ -288,13 +289,12 @@ def submit_result(data: ResultReport, token: str = Depends(verify_token)):
 @app.get("/login")
 def login():
     params = {
-        "client_id": CLIENT_ID,
-        "redirect_uri": REDIRECT_URI,
-        "response_type": "code",
-        "scope": "openid",
-        "state": "clutchbet123"
-    }
-    url = f"https://accounts.faceit.com/?{urlencode(params)}"
+    "client_id": CLIENT_ID,
+    "redirect_uri": REDIRECT_URI,
+    "response_type": "code",
+    "scope": "openid"
+}
+    url = f"https://accounts.faceit.com/auth/openid/v1/authorize?{urlencode(params)}"
     return RedirectResponse(url)
 
 @app.get("/callback")
