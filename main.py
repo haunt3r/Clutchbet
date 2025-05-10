@@ -294,11 +294,12 @@ def login():
     "response_type": "code",
     "scope": "openid"
 }
-    url = f"https://accounts.faceit.com/auth/openid/v1/authorize?{urlencode(params)}"
+    url = f"https://accounts.faceit.com/accounts?{urlencode(params)}"
     return RedirectResponse(url)
 
 @app.get("/callback")
 async def callback(code: str, state: str):
+    print("CODE FRÅN FACEIT:", code)
     token_url = "https://api.faceit.com/auth/v1/oauth/token"
     headers = {"Content-Type": "application/json"}
     data = {
