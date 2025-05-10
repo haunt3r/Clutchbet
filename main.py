@@ -1,3 +1,4 @@
+from urllib.parse import urlencode
 from fastapi import Form
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,7 +8,6 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 import os
 from fastapi.responses import RedirectResponse
-import urllib.parse
 load_dotenv()
 
 CLIENT_ID = os.getenv("CLIENT_ID")
@@ -294,7 +294,7 @@ def login():
         "scope": "openid",
         "state": "clutchbet123"
     }
-    url = f"https://accounts.faceit.com/?{urllib.parse.urlencode(params)}"
+    url = f"https://accounts.faceit.com/?{urlencode(params)}"
     return RedirectResponse(url)
 
 @app.get("/callback")
@@ -344,3 +344,53 @@ def show_terms():
 def show_privacy():
     with open("static/privacy.html", "r", encoding="utf-8") as f:
         return f.read()
+@app.get("/callback")
+async def callback(code: str = None):
+    if code is None:
+        return {"error": "Ingen kod från FACEIT"}
+
+    print("FACEIT-kod:", code)
+
+    # Hämta access token från FACEIT
+    token_url = "https://api.faceit.com/auth/v1/oauth/token"
+    data = {
+        "grant_type": "authorization_code",
+        "code": code,
+        "redirect_uri": REDIRECT_URI,
+        "client_id": CLIENT_ID,
+        "client_secret": CLIENT_SECRET
+    }
+
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+
+    async with httpx.AsyncClient() as client:
+        token_response = await client.post(token_url, content=urlencode(data), headers=headers)
+
+    if token_response.status_code != 200:
+        print("Fel vid tokenhämtning:", token_response.text)
+        return {"error": "Kunde inte hämta access token"}
+
+    token_data = token_response.json()
+    access_token = token_data.get("access_token")
+
+    # Hämta användarinfo
+    profile_url = "https://open.faceit.com/data/v4/players"
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+
+    async with httpx.AsyncClient() as client:
+        profile_response = await client.get(profile_url, headers=headers)
+
+    if profile_response.status_code != 200:
+        print("Fel vid profilhämtning:", profile_response.text)
+        return {"error": "Kunde inte hämta spelarprofil"}
+
+    profile = profile_response.json()
+    return {
+        "nickname": profile.get("nickname"),
+        "faceit_id": profile.get("player_id"),
+        "games": profile.get("games", {})
+    }
