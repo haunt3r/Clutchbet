@@ -13,6 +13,7 @@ load_dotenv()
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 REDIRECT_URI = os.getenv("REDIRECT_URI")
+FACEIT_API_KEY = os.getenv("FACEIT_API_KEY")
 class ResultReport(BaseModel):
     username: str
     match_id: int

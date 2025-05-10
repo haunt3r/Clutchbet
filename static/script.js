@@ -146,7 +146,6 @@ window.onload = () => {
   window.submitResult = submitResult;
   window.reportWin = reportWin;
   window.reportLoss = reportLoss;
-  window.registerUser = registerUser;
   window.fetchFaceitInfo = fetchFaceitInfo;
   document.getElementById("team-select").addEventListener("change", (e) => {
     localStorage.setItem("team", e.target.value);
